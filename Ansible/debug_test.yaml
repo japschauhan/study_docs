@@ -1,0 +1,21 @@
+---
+- hosts: localhost
+  gather_facts: yes
+  tasks:
+
+  - name: executing sample command
+    shell: echo "Decoding DevOps"
+    register: abcd
+
+  - name: printing variable
+    debug:
+      var: abcd
+
+  - name: printing variable with stdout
+    debug:
+      var: abcd.stdout
+
+  - name: printing variable with adding some extra message
+    debug:
+      msg: "Hi This Is  {{ abcd.stdout }}"
+

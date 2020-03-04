@@ -1,0 +1,53 @@
+---
+#make sure all the path exist on the target servers.
+- hosts: webservers
+  sudo: yes
+  vars:
+    http_port: 80
+    doc_dir: /ansible/
+    doc_root: /var/www/html/
+    max_clients: 5
+
+  vars_prompt:
+    name: username
+    prompt: What is your name
+
+  tasks:
+  - name: ensure apache is instlled
+    apt: name=apache2 state=present
+    when: ansible_os_family == "Debian"
+
+  - name: start apache service
+    service: name=apache2 enabled=yes state=started
+
+  - name: deploy configuration file
+    template: src=templates/httpd.j2 dest=/etc/apache2/conf/httpd.conf
+    notify:
+      - Restart Apache
+
+  - name: Copy site file
+    template: src=templates/index.j2 dest={{ doc_root }}/index.html
+
+  handlers:
+  - name: Restart Apache
+    service: name=apache2 state=restarted
+
+- hosts: dbservers
+  sudo: yes
+
+  tasks:
+  - name: ensure DB server is installed
+    apt: name=mysql-server state=present
+    when: ansible_os_family == "Debian"
+
+  - name: ensute MYSQL service is running
+    service: name=mysql state=started
+
+
+    #- hosts: webservers:dbservers
+  #  sudo: yes
+
+  #  tasks:
+          #  - name: disabling IP tables
+    #    service: name=iptables state=stopped
+
