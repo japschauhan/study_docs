@@ -1,0 +1,114 @@
+Link: https://dvops.cloud/2019/03/14/configuring-jenkins-slaves-on-aws-ec2/
+
+
+1. Pre-requisities: Jenkins and Java should be installed on both of the server.
+
+2. steps:
+
+a. first step is to set the SSH accessibility among the server by following below steps:
+		On SLAVE:
+
+			Create user along with the home directory and bash as default shell :
+				ubuntu@ip-10-0-1-75:~$ sudo useradd linux-slave -m -s /bin/bash
+			Verify the user created :
+				ubuntu@ip-10-0-1-75:~$ cat /etc/passwd | grep slave
+				linux-slave:x:1001:1001::/home/linux-slave:/bin/bash
+				
+			Update the password for newly created user :
+				ubuntu@ip-10-0-1-75:~$ sudo passwd linux-slave
+				Enter new UNIX password:
+				Retype new UNIX password:
+				passwd: password updated successfully
+				
+			Use the usermod command to add the user to the sudo group( in case of ec2 server, make sure jenkins user is in the same group as of ec2-user(i.e 1000).
+				ubuntu@ip-10-0-1-75:~$ sudo usermod -aG 1000 linux-slave
+			Login as linux-slave user :
+				ubuntu@ip-10-0-1-75:~$ sudo su - linux-slave
+				To run a command as administrator (user "root"), use "sudo <command>".
+				See "man sudo_root" for details.
+				
+				linux-slave@ip-10-0-1-75:~$ whoami
+				linux-slave
+
+			Generate the keys using ssh-keygen command. The private and public keys will be created at these locations `/home/linux-slave/.ssh/id_rsa` and `/home/
+				linux-slave /.ssh/id_rsa.pub`
+				linux-slave@ip-10-0-1-75:~$ ssh-keygen -t rsa -N "" -f /home/linux-slave/.ssh/id_rsa
+				Generating public/private rsa key pair.
+				Created directory '/home/linux-slave/.ssh'.
+				Your identification has been saved in /home/linux-slave/.ssh/id_rsa.
+				Your public key has been saved in /home/linux-slave/.ssh/id_rsa.pub.
+				The key fingerprint is:
+				SHA256:2bcDaORcBltvgN39OiODi2VxWlg/JxvCWx17/hHpH+Y linux-slave@ip-10-0-1-75
+				The key's randomart image is:
+				+---[RSA 2048]----+
+				|        .oo. .   |
+				|        .+.oo .. |
+				|        o o+o. o+|
+				|       + *o.= *+=|
+				|        S o*.+.Oo|
+				|       .  =o+.==.|
+				|         + .oooo=|
+				|        . .  . Eo|
+				|                 |
+				+----[SHA256]-----+
+				
+			Change directory to .ssh and copy the public key (.pub) to authorized_keys file :
+				linux-slave@ip-10-0-1-75:~$ cd .ssh
+				
+				linux-slave@ip-10-0-1-75:~/.ssh$ ls
+				authorized_keys  id_rsa  id_rsa.pub
+				
+				linux-slave@ip-10-0-1-75:~/.ssh$ cat id_rsa.pub > authorized_keys
+
+			Provide permissions only to owner (linux-slave) of the authorized_keys file :
+				linux-slave@ip-10-0-1-75:~/.ssh$ chmod 700 authorized_keys
+
+
+		On MASTER:
+			Make sure jenkins user is there on the master machine and its part of the sudo group(again, in AWS use GID of ec2-user, i.e 1000:
+				ubuntu@ip-10-0-1-171:~$ cat /etc/passwd | grep jenkins
+				jenkins:x:111:115:Jenkins,,,:/var/lib/jenkins:/bin/bash
+				
+				ubuntu@ip-10-0-1-171:~$ sudo usermod -aG 1000 jenkins
+				
+				ubuntu@ip-10-0-1-171:~$ groups jenkins
+				jenkins : jenkins sudo
+			Here, we can see that the home directory of jenkins user is /var/lib/jenkins and default shell is bash.
+			Login as jenkins user in your master machine :
+				ubuntu@ip-10-0-1-171:~$ sudo su - jenkins
+				To run a command as administrator (user "root"), use "sudo <command>".
+				See "man sudo_root" for details.
+				
+			
+			Create the .ssh directory if it doesn’t exist and change the current directory to .ssh.
+				jenkins@ip-10-0-1-171:~$ mkdir -p ~/.ssh
+				jenkins@ip-10-0-1-171:~$ cd ~/.ssh
+
+			Tell Jenkins master to grab the public key of slave machine (using its private IP address) and add it to its known_hosts file for connection to take place every time seamlessly.
+				jenkins@ip-10-0-1-171:~/.ssh$ ssh-keyscan -H 10.0.1.75 >>/var/lib/jenkins/.ssh/known_hosts
+				# 10.0.1.75:22 SSH-2.0-OpenSSH_7.6p1 Ubuntu-4ubuntu0.2
+				# 10.0.1.75:22 SSH-2.0-OpenSSH_7.6p1 Ubuntu-4ubuntu0.2
+				# 10.0.1.75:22 SSH-2.0-OpenSSH_7.6p1 Ubuntu-4ubuntu0.2
+				
+			Finally, make jenkins user as owner of it and remove other user’s access to it.
+				jenkins@ip-10-0-1-171:~/.ssh$ chown jenkins:jenkins known_hosts
+				
+				jenkins@ip-10-0-1-171:~/.ssh$ chmod 700 known_hosts
+				
+				jenkins@ip-10-0-1-171:~/.ssh$ ls -l
+				total 4
+				-rwx------ 1 jenkins jenkins 2418 Mar 14 10:26 known_hosts
+
+	With the above steps we are done with the steps for setting ssh connectivity.
+
+Now we can configure it on the Jenkins:
+There is one tricky part, i.e: in launch method of create node, we need to select "Launch agent agents via SSH" and then in host name we need to provide
+EC2 instance private IP. For credentials we need to click on add, and the in KIND, we should select "SSH username with Private key". As next step, we
+should provide the username(for this example, we have created a user linux-slave above, so we should provide this). and then we need to copy the
+private key of the slave user, like below:
+
+linux-slave@ip-10-0-1-75:~/.ssh$ cat id_rsa
+
+and paste it in the private key -> enter directly -> add section.
+
+Then save and check the status of node.

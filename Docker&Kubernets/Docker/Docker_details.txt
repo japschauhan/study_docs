@@ -1,0 +1,5 @@
+Docker hub login:
+userid: jasbeer1988
+pwd: not sure, probably the default one.
+
+

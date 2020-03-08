@@ -1,0 +1,17 @@
+Groovy for pipeline: https://github.com/jenkinsci/pipeline-plugin/blob/master/TUTORIAL.md
+
+1. print command:
+	echo "hello"
+	println "hello"
+  NOTE: we can use single quotes as well, but for using variable we should only use double quotes.
+
+2. comment:
+	Single line comment 
+		// FIXME write this
+	Multiline comment:
+
+		/*
+		 * Copyright 2014 Yoyodyne, Inc.
+ 		*/
+
+3. 

@@ -1,0 +1,112 @@
+  =============
+|| On Ubuntu ||
+  =============
+
+Install Java Commands  
+------------------
+sudo add-apt-repository ppa:webupd8team/java
+sudo apt-get update
+sudo apt install oracle-java8-installer
+sudo apt install oracle-java8-set-default
+
+Install Maven Commands  
+------------------
+cd /opt/
+sudo wget http://us.mirrors.quenda.co/apache/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz
+
+sudo tar -xf apache-maven-3.6.3-bin.tar.gz
+sudo mv apache-maven-3.6.3/ apache-maven/
+
+sudo update-alternatives --install /usr/bin/mvn maven /opt/apache-maven/bin/mvn 1001
+
+Configuring Apache Maven Environment
+------------------
+
+$ cd /etc/profile.d/
+$ sudo gedit maven.sh
+###################################################
+# Apache Maven Environment Variables
+# MAVEN_HOME for Maven 1 - M2_HOME for Maven 2
+export JAVA_HOME=/usr/lib/jvm/java-8-oracle
+export M2_HOME=/opt/apache-maven
+export MAVEN_HOME=/opt/apache-maven
+export PATH=${M2_HOME}/bin:${PATH}
+
+sudo chmod +x maven.sh
+sudo source maven.sh
+
+
+
+  =============
+|| On Linux ||
+  =============
+
+Install Java:
+yum install Java
+->the above command will install the default java-11-openjdk.x86_64(latest one at the time of writing) package. But this package doesn't include JDK and
+hence, Maven version was running fine but mvn package wasn't. To make them run we need to dowdload JDK. In general a package with ****-devel is the package
+contains JDK, it can be found by doing yum search as below:
+yum search java|grep -i java-
+
+example:
+[root@ip-172-31-88-36 ~]# yum search java|grep -i java-
+Last metadata expiration check: 0:31:28 ago on Thu 05 Mar 2020 06:16:19 AM UTC.
+java-atk-wrapper.x86_64 : Java ATK Wrapper
+libguestfs-java-devel.x86_64 : Java development package for libguestfs
+abrt-java-connector.x86_64 : JNI Agent library converting Java exceptions to
+mariadb-java-client.noarch : Connects applications developed in Java to MariaDB
+java-11-openjdk.x86_64 : OpenJDK Runtime Environment 11
+java-1.8.0-openjdk.x86_64 : OpenJDK Runtime Environment 8
+java-1.8.0-openjdk.x86_64 : OpenJDK Runtime Environment 8
+java-11-openjdk-src.x86_64 : OpenJDK Source Bundle 11
+java-11-openjdk-demo.x86_64 : OpenJDK Demos 11
+java-11-openjdk-devel.x86_64 : OpenJDK Development Environment 11
+java-11-openjdk-jmods.x86_64 : JMods for OpenJDK 11
+java-1.8.0-openjdk-src.x86_64 : OpenJDK Source Bundle 8
+java-11-openjdk-javadoc.x86_64 : OpenJDK 11 API documentation
+java-1.8.0-openjdk-demo.x86_64 : OpenJDK Demos 8
+java-11-openjdk-headless.x86_64 : OpenJDK Headless Runtime Environment 11
+java-1.8.0-openjdk-devel.x86_64 : OpenJDK Development Environment 8                         <- the one we are looking for
+java-1.8.0-openjdk-javadoc.noarch : OpenJDK 8 API documentation
+java-1.8.0-openjdk-headless.x86_64 : OpenJDK Headless Runtime Environment 8
+java-11-openjdk-javadoc-zip.x86_64 : OpenJDK 11 API documentation compressed in
+java-1.8.0-openjdk-headless.x86_64 : OpenJDK Headless Runtime Environment 8
+
+
+Install the above mentioned JDK using : yum install java-1.8.0-openjdk-devel.x86_64
+
+
+After installation of JAVA we need to set the environment variable(either local or global). using below
+export JAVA=/usr/lib/jvm/java-openjdk
+the content of /usr/lib/jvm/java-openjdk directory should be as below:
+
+[root@ip-172-31-88-36 java-openjdk]# ll
+total 4
+drwxr-xr-x. 2 root root 4096 Mar  5 06:48 bin
+drwxr-xr-x. 3 root root  132 Mar  5 06:48 include
+drwxr-xr-x. 4 root root   28 Mar  5 06:44 jre
+drwxr-xr-x. 3 root root  144 Mar  5 06:48 lib
+drwxr-xr-x. 2 root root  200 Mar  5 06:48 tapset
+
+we also need to set this path in the jenkins JAVA configuration in global tool configuration.
+
+
+
+install wget if it is not there: yum install wget
+create an empty directory(lets say maven, prefrebly in /opt) to download the binaries:
+cd /opt
+mkdir maven
+cd maven
+sudo wget http://us.mirrors.quenda.co/apache/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz
+sudo tar -xf apache-maven-3.6.3-bin.tar.gz
+cd apache-maven-3.6.3
+pwd
+/opt/maven/apache-maven-3.6.3
+
+To set the environment(permanently, temporary is set above in ubuntu setup), edit the user profile. To do so perform following steps:
+in the openjdk home directory do: vi .bash_profile
+make an entry for maven home as:
+M2_HOME=/opt/maven/apache-maven-3.6.3
+M2=$M2_HOME/bin
+in $PATH, made entry of $M2_HOME, $M2
+
