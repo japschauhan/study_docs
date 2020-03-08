@@ -1,0 +1,85 @@
+Resolving error of GitHup public key rejection, follow the link:
+https://help.github.com/en/articles/error-permission-denied-publickey
+
+
+Basic commands:
+
+1. To set the username in git:
+	git config --global user.name "Jasbeer Singh"
+	git config --global user.email "japs.chauhan@gmail.com"
+
+2. general config usage or to find the current settings: git config --list
+	
+1. To clone your repository use command : git clone <URL>
+It will create a copy of repository on your local machine with the same folder name.
+
+	2. Adding a remote repo: git remote add origin <URL>
+
+
+2. when we create any file/folder we need to follow below steps to replicate those changes in repo:
+
+git add <filename> -> put the file into staged state
+git commit -> this command will commit the files into the repo
+git push
+git push -u origin master
+
+3. git status - to find the current status
+
+4. git ->enter
+	to see all possible commands
+
+5. git pull - to get the latest update in repo.
+
+6. .gitignore -> a simple text file which we want git to ignore while doing adding files to the repo. Just create this file and add the filenames to ignore
+		in it or we can use regex also like *.txt. for directory use <filename>/. For example, to ignore log file add log/ in the gitignore file.
+
+7. To revert a file added into the git using "git add <filename>/." command, we can use "git reset <filename>/.". This command will remove the file
+from the staged step but won't do any changes in your local directory. To see the changes in local directory do checkout.
+
+8. git diff -> command to see the differences in the changed files
+   git diff --staged -> shows the differences in the files at staged area and in the repo.
+	
+9. git log - to see the log of commits.
+
+10. git rm <file-name> -> remove the file from the directory and also perform the "git add ." step.
+
+11. To retrieve a deleted file, we can use the commit hash from the commit log. To do it use below steps:
+	git log -- <filename>
+    look for the commit which added the deleted file and copy the first five characters of that commit hash
+	git checkout <hash 5 charcter> -- <filename>
+
+12. Alias is the way to use shorthand for the long commands. For example, alias gst="git status" will create an alias gst which is a shorthand of git 
+	status.
+
+Working with the branches:
+
+13. To create a new branch-> git branch <branch-name>
+	To start working inside the newly created branch, we need to checkout it using - git checkout <branchname>
+
+14. The two steps mentioned above can be used in just one command by using: git checkout -b <branchname>.
+
+15. git branch -> command to list the existing banches.
+
+16. git branch --merged  -> command to check the branches which are merged.
+
+17. git merge <branch-name> ->to merge the branch using fast forward method.
+
+18. git branch -d <branch-name> -> to delete a branch
+
+19. Conflict resolutin-> after resolving the conflict, use git add and git commit commands to complete the merging process.
+
+20. git remote - to look for the remote. While cloning a repom the default name of a remote is set as origin.
+
+21. git fetch origin -> to fetch the data in origin at remote. It would be just used to compare the data in local. Won't make any changes in local work tree.
+
+22. git merge origin/master -> to pull the changes done in the remote repo. this command should be followed by fetch command of above step.
+
+23. git pull origin -> combine the above-mentioned two steps and reflect the changes in remote repo to the local repo.
+
+24.git remote -v -> shows the remote
+
+25. git pull origin <branch-name> -> to pull latest data for a branch from repo. 
+
+26. git remote rm origin -> removing an existing origin
+
+27. git remote set-url origin https://github.com/USERNAME/REPOSITORY.git  -> updating origin

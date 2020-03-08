@@ -1,0 +1,25 @@
+Below are the steps which are required to follow to add public key in github:
+
+1. Generation of public and private key, and adding it to the agent:
+
+ssh-keygen -t rsa -b 4096 -C "japs.chauhan@gmail.com"
+
+-> leave filename and passphrase blank
+
+eval $(ssh-agent -s)
+
+ssh-add ~/.ssh/id_rsa
+
+
+2. adding keys into the github account:
+
+	a. copy the ~/.ssh/id_rsa.pub
+	b. In github, go to profile -> setting -> SSH and GPG keys
+	c. click on new SSH key
+	d. give the key name and paste the key copied in step a
+
+3. verifying key: on terminal execute below command and verify the output as below.
+
+[ec2-user@ip-172-31-92-38 ~]$ ssh -T git@github.com
+Hi japschauhan! You've successfully authenticated, but GitHub does not provide shell access.
+
