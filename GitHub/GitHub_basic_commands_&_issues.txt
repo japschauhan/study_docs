@@ -4,8 +4,10 @@ https://help.github.com/en/articles/error-permission-denied-publickey
 
 Basic commands:
 
+a set of changes is called "delta" in GIT
+
 1. To set the username in git:
-	git config --global user.name "Jasbeer Singh"
+	git config --global user.name "Jasbaeer Singh"
 	git config --global user.email "japs.chauhan@gmail.com"
 
 2. general config usage or to find the current settings: git config --list
@@ -39,7 +41,10 @@ from the staged step but won't do any changes in your local directory. To see th
 8. git diff -> command to see the differences in the changed files
    git diff --staged -> shows the differences in the files at staged area and in the repo.
 	
-9. git log - to see the log of commits.
+9. git log - to see the log of commits in current branch.
+	git log --all -> to see commits in all branch
+	git log --all --graph -> to see logs from all branches in graphical format
+	git log --all --graph --oneline -> to see logs from all branch in graphical format with a short version of attached hash
 
 10. git rm <file-name> -> remove the file from the directory and also perform the "git add ." step.
 
