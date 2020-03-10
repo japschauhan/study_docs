@@ -1,6 +1,7 @@
 Resolving error of GitHup public key rejection, follow the link:
 https://help.github.com/en/articles/error-permission-denied-publickey
 
+A good link for understanding of HEAD and Master: https://people.gnome.org/~federico/news-2008-11.html#pushing-and-pulling-with-git-1
 
 Basic commands:
 
@@ -24,6 +25,9 @@ git add <filename> -> put the file into staged state
 git commit -> this command will commit the files into the repo
 git push
 git push -u origin master
+
+Command to push a branch to remote repo called origin:
+git push -u origin <branch-name>
 
 3. git status - to find the current status
 
