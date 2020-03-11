@@ -92,3 +92,7 @@ Working with the branches:
 26. git remote rm origin -> removing an existing origin
 
 27. git remote set-url origin https://github.com/USERNAME/REPOSITORY.git  -> updating origin
+
+28. git revert <name of bad commit> -> create a new commit that undoes all changes that were made in the bad commit.
+
+29 git diff-tree --no-commit-id --name-only -r {hash}  -> to find a list of files changed during commit with <hash>.
